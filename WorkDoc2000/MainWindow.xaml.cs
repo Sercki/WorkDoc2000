@@ -51,36 +51,44 @@ namespace WorkDoc2000
         }
 
         private void SaveText_Click(object sender, RoutedEventArgs e)
-        {
-            FileInfo fi = new FileInfo(@"WorkDoc2000.txt");
-            if (fi.Exists)
+        {           
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "WorkDoc2000";
+            dlg.DefaultExt = ".txt";
+            dlg.Filter = "Text documents (.txt)|*.txt";
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
             {
-                FileStream fs = fi.Open(FileMode.Append, FileAccess.Write, FileShare.Read);
-                StreamWriter sw = new StreamWriter(fs);
-                sw.WriteLine(myTextBox.Text);
-                sw.Close();
-                fs.Close();
-            }
-            else
-            {
-                FileStream fs = fi.Open(FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-                StreamWriter sw = new StreamWriter(fs);
-                sw.WriteLine(myTextBox.Text);
-                sw.Close();
-                fs.Close();
+                string fileName = dlg.FileName;
+                using (StreamWriter sw = new StreamWriter($"{fileName}"))
+                {
+                    sw.WriteLine(myTextBox.Text);
+                }                
             }
             myTextBox.Text = String.Empty;
         }
 
         private void ReadText_Click(object sender, RoutedEventArgs e)
-        {
-            FileInfo fi = new FileInfo(@"WorkDoc2000.txt");
-            FileStream fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-            StreamReader sr = new StreamReader(fs);
-            string toTextBox = sr.ReadToEnd();
-            sr.Close();
-            fs.Close();
-            myTextBox.Text = toTextBox;
+        {    
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = "WorkDoc2000"; // Default file name
+            dlg.DefaultExt = ".txt"; // Default file extension
+            dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by ex
+                                                        // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+            // Process open file dialog box results
+            if (result == true)
+            {
+                // Open document
+                string fileName = dlg.FileName;
+                string toTextBox = " ";
+                using(StreamReader sr = new StreamReader(fileName))
+                {
+                    toTextBox = sr.ReadToEnd();
+                }
+                myTextBox.Text = toTextBox;
+
+            }
         }
 
         private void CapitalLetterAfterDOT_Click(object sender, RoutedEventArgs e)
@@ -102,7 +110,7 @@ namespace WorkDoc2000
         private void LEETspeak_Click(object sender, RoutedEventArgs e)
         {
             string input = myTextBox.Text;
-            string output = input.Replace('a', '4').Replace('A', '4').Replace('e', '3').Replace('E', '3');
+            string output = input.Replace('a', '4').Replace('A', '4').Replace('e', '3').Replace('E', '3').Replace('s','5').Replace('s','5').Replace('i','1').Replace('i','1').Replace('o', '0').Replace('O', '0').Replace('z', '2').Replace('Z', '2').Replace('b', '6').Replace('B', '8');
             myTextBox.Text = output;
         }
     }
